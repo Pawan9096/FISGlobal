@@ -1,0 +1,59 @@
+<dependencies>
+    <!-- RestAssured for API Testing -->
+    <dependency>
+        <groupId>io.rest-assured</groupId>
+        <artifactId>rest-assured</artifactId>
+        <version>5.4.0</version>
+        <scope>test</scope>
+    </dependency>
+
+    <!-- JSON Parsing with Jackson -->
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>2.16.1</version>
+    </dependency>
+
+    <!-- JUnit for assertions -->
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.9.1</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+
+
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+public class CoinDeskAPITest {
+
+    @Test
+    public void testCoinDeskAPI() {
+        // Base URL of the API
+        String url = "https://api.coindesk.com/v1/bpi/currentprice.json";
+
+        // Step 1: Send GET request
+        Response response = RestAssured.get(url);
+
+        // Step 2: Verify response status is 200
+        Assertions.assertEquals(200, response.getStatusCode(), "Status code should be 200");
+
+        // Step 3: Extract JSON response
+        String jsonResponse = response.getBody().asString();
+
+        // Verify the response contains 3 BPIs (USD, GBP, EUR)
+        Assertions.assertTrue(jsonResponse.contains("\"USD\""), "Response should contain USD");
+        Assertions.assertTrue(jsonResponse.contains("\"GBP\""), "Response should contain GBP");
+        Assertions.assertTrue(jsonResponse.contains("\"EUR\""), "Response should contain EUR");
+
+        // Verify the GBP description is "British Pound Sterling"
+        String gbpDescription = response.jsonPath().getString("bpi.GBP.description");
+        Assertions.assertEquals("British Pound Sterling", gbpDescription, "GBP description should match");
+        
+        System.out.println("Test Passed: API response is valid.");
+    }
+}
