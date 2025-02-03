@@ -1,0 +1,62 @@
+package Pages;
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import java.time.Duration;
+import java.util.List;
+
+public class EbayAddToCartTest {
+    public static void main(String[] args) {
+        // Setup ChromeDriver using WebDriverManager
+        WebDriverManager.chromedriver().setup();
+        WebDriver driver = new ChromeDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        try {
+            //Open eBay
+            driver.get("https://www.ebay.com/");
+            driver.manage().window().maximize();
+
+            //Search for 'book'
+            WebElement searchBox = driver.findElement(By.id("gh-ac"));
+            searchBox.sendKeys("book");
+            searchBox.submit();
+
+            //Wait for search results and get list of books
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".s-item a.s-item__link")));
+            List<WebElement> books = driver.findElements(By.cssSelector(".s-item a.s-item__link"));
+
+            //Click on the first book if the list is not empty
+            if (!books.isEmpty()) {
+                books.get(0).click();
+                System.out.println("Clicked on the first book.");
+            } else {
+                System.out.println("No books found.");
+                return; // Exit test if no books are found
+            }
+
+            //Wait for 'Add to cart' button and click it
+            WebElement addToCartButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("atcRedesignId_btn")));
+            addToCartButton.click();
+            System.out.println("Clicked 'Add to cart' button.");
+
+            //Verify cart has been updated
+            WebElement cartCount = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("gh-cart-n")));
+            String itemCount = cartCount.getText();
+
+            if (!itemCount.equals("0")) {
+                System.out.println("Test Passed: Item successfully added to cart. Cart count: " + itemCount);
+            } else {
+                System.out.println("Test Failed: Cart count is still 0.");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Test Failed due to exception: " + e.getMessage());
+        } finally {
+            // Close the browser
+            driver.quit();
+        }
+    }
+}
