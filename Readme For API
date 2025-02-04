@@ -1,0 +1,70 @@
+Overview
+
+This project automates the testing of the CoinDesk API endpoint:
+https://api.coindesk.com/v1/bpi/currentprice.json
+
+It verifies that the response contains three Bitcoin Price Index (BPI) currencies (USD, GBP, and EUR) and checks if the GBP description is correctly set to "British Pound Sterling".
+
+Prerequisites
+Java (JDK 8 or later)
+Maven (for dependency management)
+TestNG (for assertions)
+RestAssured (for API automation)
+Installation & Setup
+
+Clone the Repository:
+git clone https://github.com/your-repo-name.git
+cd your-repo-name
+
+Ensure Java and Maven are installed:
+java -version
+mvn -version
+
+Add the following dependencies to pom.xml:
+<dependencies>
+    <dependency>
+        <groupId>io.rest-assured</groupId>
+        <artifactId>rest-assured</artifactId>
+        <version>5.3.0</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>7.7.0</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+
+Test Execution
+Running the Tests
+To execute the API test, use the following command:
+mvn test
+
+Expected Output
+The test should pass if:
+The API response contains USD, GBP, and EUR.
+The GBP description matches "British Pound Sterling".
+
+             Test Implementation
+
+The test is implemented in CoinDeskAPITest.java:
+
+@Test
+public void verifyBitcoinPriceAPI() {
+    Response response = RestAssured.get("https://api.coindesk.com/v1/bpi/currentprice.json");
+    Assert.assertEquals(response.getStatusCode(), 200, "Response code is not 200!");
+    Assert.assertTrue(response.getBody().asString().contains("USD"), "USD currency is missing!");
+    Assert.assertTrue(response.getBody().asString().contains("GBP"), "GBP currency is missing!");
+    Assert.assertTrue(response.getBody().asString().contains("EUR"), "EUR currency is missing!");
+    String gbpDescription = response.jsonPath().getString("bpi.GBP.description");
+    Assert.assertEquals(gbpDescription, "British Pound Sterling", "GBP description is incorrect!");
+}
+
+Enhancements & Future Improvements
+
+Implement structured POJO classes for better response handling.
+
+Integrate with Extent Reports for better logging.
+
+Convert to a data-driven test to validate multiple currency descriptions.
