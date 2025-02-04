@@ -1,0 +1,69 @@
+Ebay Add to Cart - Selenium Automation
+This project automates the process of searching for a book on eBay, selecting the first available book, adding it to the cart, 
+and verifying that the cart has been updated.
+
+Project Overview
+This test scenario performs the following steps:
+
+Opens a browser and navigates to https://www.ebay.com/.
+Searches for ‘book’ in the search bar.
+Selects the first available book from the search results.
+Clicks on the ‘Add to Cart’ button on the book's details page.
+Verifies that the cart count is updated.
+
+Technology Stack
+Programming Language: Java
+Automation Framework: Selenium WebDriver
+Build Tool: Maven
+
+Prerequisites
+1. Install Java and Maven
+Ensure Java (JDK 8 or later) and Maven are installed on your system.
+2. Install Google Chrome and ChromeDriver
+3. Set Up Maven Dependencies
+Add the following dependencies to your pom.xml:
+<dependencies>
+    <!-- Selenium WebDriver -->
+    <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-java</artifactId>
+        <version>4.10.0</version>
+    </dependency>
+</dependencies>
+
+Project Structure
+ebay-automation/
+│── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   ├── EbayAddToCartTest.java
+│── pom.xml
+│── README.md
+How to Run the Test
+1. Clone the Repository
+git clone https://github.com/your-repo/ebay-automation.git
+cd ebay-automation
+2. Execute the Test
+If using Maven, run:
+mvn test
+If running manually, execute the EbayAddToCartTest Java class from an IDE.
+
+Expected Output
+If the test passes, you will see the following output in the console:
+
+Clicked on the first book successfully.
+Clicked on 'Add to Cart'.
+Test Passed: Item successfully added to cart. Cart count: 1
+If the test fails, an error message will be displayed.
+
+Troubleshooting
+1. Element Not Found Issues
+Ensure ChromeDriver is updated.
+Use System.out.println(driver.getPageSource()); to debug missing elements.
+2. Stale Element Exception
+Try adding Thread.sleep(2000); before clicking elements (for debugging only).
+Use explicit waits (WebDriverWait) to ensure elements are ready before interaction.
+Future Enhancements
+Integrate JUnit or TestNG for better assertion handling.
+Implement Page Object Model (POM) for better code structure.
+Run tests in headless mode for faster execution in CI/CD pipelines.
